@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ColetaBackendService } from '../services/coleta-backend.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ColetaBackendService } from 'src/app/services/coleta-backend.service';
 import { NavController, ToastController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-pedido-prestador',
@@ -15,12 +16,14 @@ export class PedidoPrestadorPage implements OnInit {
   solicitacao: any;
   nomeCliente: string = '...';
 
-  constructor(
-    private route: ActivatedRoute,
-    private coletaService: ColetaBackendService,
-    private toastCtrl: ToastController,
-    private navCtrl: NavController
-  ) {}
+ constructor(
+  private route: ActivatedRoute,
+  private coletaService: ColetaBackendService,
+  private toastCtrl: ToastController,
+  private navCtrl: NavController,
+  private router: Router // Adicione esta linha
+) {}
+
 
   ngOnInit() {}
   
@@ -35,17 +38,17 @@ export class PedidoPrestadorPage implements OnInit {
         this.solicitacao = res.data;
 
         const authorId = this.solicitacao.authorId;
-      if (authorId) {
-        this.coletaService.getUsuarioPorId(authorId).subscribe({
-          next: (userRes) => {
-            const user = (userRes as any).data;
-            this.nomeCliente = user.name;
-          },
-          error: () => {
-            this.nomeCliente = 'Nome indisponível';
-          }
-        });
-      }
+        if (authorId) {
+          this.coletaService.getUsuarioPorId(authorId).subscribe({
+            next: (userRes) => {
+              const user = (userRes as any).data;
+              this.nomeCliente = user.name;
+            },
+            error: () => {
+              this.nomeCliente = 'Nome indisponível';
+            }
+          });
+        }
       },
       error: () => {
         this.showErro('Erro ao carregar os detalhes do pedido');
@@ -64,8 +67,8 @@ export class PedidoPrestadorPage implements OnInit {
             color: 'success'
           });
           await toast.present();
-            this.navCtrl.navigateRoot('/pedidos-prestador');
-          } else {
+          this.navCtrl.navigateRoot('/pedidos-prestador');
+        } else {
           this.showErro(res.message ?? 'Erro ao aceitar a solicitação');
         }
       },
@@ -74,6 +77,30 @@ export class PedidoPrestadorPage implements OnInit {
       }
     });
   }
+
+  // Adicione este método para finalizar a solicitação
+ async finalizarPedido() {
+  this.coletaService.finalizarSolicitacao(this.solicitacao.id).subscribe({
+    next: async (res: any) => {
+      if (res.status === 200) {
+        const toast = await this.toastCtrl.create({
+          message: 'Pedido finalizado com sucesso!',
+          duration: 2000,
+          color: 'success'
+        });
+        await toast.present();
+        this.router.navigate(['/pedidos-prestador']);
+      } else {
+        this.showErro(res.message ?? 'Erro ao finalizar o pedido');
+      }
+    },
+    error: (err: any) => {
+      console.error('Erro ao finalizar pedido:', err);
+      this.showErro('Erro de conexão com o servidor');
+    }
+  });
+}
+
 
   async showErro(msg: string) {
     const toast = await this.toastCtrl.create({
@@ -85,10 +112,9 @@ export class PedidoPrestadorPage implements OnInit {
   }
 
   tipoColetaMap: { [key: number]: string } = {
-  0: 'Reciclável',
-  1: 'Entulho',
-  2: 'Orgânico',
-  3: 'Eletrônico'
-};
-  
+    0: 'Reciclável',
+    1: 'Entulho',
+    2: 'Orgânico',
+    3: 'Eletrônico'
+  };
 }

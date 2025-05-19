@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class PedidosPrestadorPage implements OnInit {
 
   solicitacoesAceitas: any[] = [];
+  solicitacoesConcluidas: any[] = []; // Nova lista para pedidos concluídos
   usuarioLogado!: IColetaUser;
 
   constructor(
@@ -22,14 +23,26 @@ export class PedidosPrestadorPage implements OnInit {
     this.carregarUsuarioEColetas();
   }
 
+  ionViewWillEnter() {
+    // Recarregar dados sempre que a página for exibida
+    this.carregarUsuarioEColetas();
+  }
+
   carregarUsuarioEColetas() {
     this.coletaService.getCurrentUserData().subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.usuarioLogado = res.data!;
         this.coletaService.listarSolicitacoes(1, 100).subscribe({
-          next: (res) => {
+          next: (res: any) => {
+            // Filtrar pedidos aceitos (em andamento)
             this.solicitacoesAceitas = res.data.filter((s: any) =>
               s.progress === 'accepted' &&
+              s.employeeId === this.usuarioLogado.id
+            );
+            
+            // Filtrar pedidos concluídos
+            this.solicitacoesConcluidas = res.data.filter((s: any) =>
+              s.progress === 'completed' &&
               s.employeeId === this.usuarioLogado.id
             );
           }
@@ -41,5 +54,4 @@ export class PedidosPrestadorPage implements OnInit {
   abrirPedido(id: number) {
     this.router.navigate(['/pedido-prestador', id]);
   }
-
 }

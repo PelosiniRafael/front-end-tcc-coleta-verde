@@ -89,3 +89,9 @@
   </div>
   <ion-spinner *ngIf="!solicitacao" name="crescent" style="display: block; margin: 50% auto;"></ion-spinner>
 </ion-content>
+
+<div class="botoes-finais">
+  <ion-button class="btn-negociar">Negociar</ion-button>
+  <ion-button class="btn-aceitar" (click)="aceitarSolicitacao()" *ngIf="solicitacao && solicitacao.progress !== 'accepted'">Aceitar</ion-button>
+  <ion-button class="btn-finalizar" color="success" (click)="finalizarPedido()" *ngIf="solicitacao && solicitacao.progress === 'accepted'">Finalizar</ion-button>
+</div>

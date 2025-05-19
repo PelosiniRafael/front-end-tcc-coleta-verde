@@ -78,3 +78,37 @@ display: flex;
 justify-content: center;
 }
 // </botões>
+.section-title {
+  margin: 20px 10px 10px;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+.subtitle-em-andamento {
+  color: var(--ion-color-warning);
+  font-weight: bold;
+}
+
+.subtitle-concluido {
+  color: var(--ion-color-success);
+  font-weight: bold;
+}
+.section-title {
+  margin: 20px 10px 10px;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+.subtitle-em-andamento {
+  color: var(--ion-color-warning);
+  font-weight: bold;
+}
+
+.subtitle-concluido {
+  color: var(--ion-color-success);
+  font-weight: bold;
+}
+
+.btn-finalizar {
+  margin-left: 8px;
+}

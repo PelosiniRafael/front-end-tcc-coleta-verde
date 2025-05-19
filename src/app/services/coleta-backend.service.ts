@@ -164,6 +164,14 @@ fazerSolicitacaoColeta(index: number, descricao: string, valor: number, data: st
     return this.rawRequest('GET', `/user/id/${id}`);
   }
 
+// Adicione este método dentro da classe ColetaBackendService, antes do último fechamento de chave }
+public finalizarSolicitacao(id: number): Observable<IColetaBackendResponse<any>> {
+  const body = { id };
+  return this.rawRequest('POST', '/solicitation/complete', body);
+}
 
 
 }
+
+
+

@@ -1,5 +1,6 @@
 <ion-content [fullscreen]="true">
   <div class="content">
+    <h2 class="section-title">Pedidos em Andamento</h2>
     <ion-card *ngFor="let pedido of solicitacoesAceitas">
       <ion-card-header>
         <ion-card-subtitle class="subtitle-em-andamento">Em andamento</ion-card-subtitle>
@@ -17,7 +18,28 @@
     </ion-card>
 
     <div *ngIf="solicitacoesAceitas.length === 0" class="ion-text-center">
-      <p>Nenhum pedido aceito até o momento.</p>
+      <p>Nenhum pedido em andamento até o momento.</p>
+    </div>
+    
+    <h2 class="section-title">Pedidos Concluídos</h2>
+    <ion-card *ngFor="let pedido of solicitacoesConcluidas">
+      <ion-card-header>
+        <ion-card-subtitle class="subtitle-concluido">Concluído</ion-card-subtitle>
+        <ion-card-title>Pedido {{ pedido.id }}</ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <p>{{ pedido.description }}</p>
+        <p><strong>Valor:</strong> R$ {{ pedido.suggestedValue }}</p>
+      </ion-card-content>
+    
+      <ion-button fill="solid" class="abrir-card" (click)="abrirPedido(pedido.id)">
+        Detalhes
+      </ion-button>
+    </ion-card>
+
+    <div *ngIf="solicitacoesConcluidas.length === 0" class="ion-text-center">
+      <p>Nenhum pedido concluído até o momento.</p>
     </div>
   </div>
 </ion-content>
